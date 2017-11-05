@@ -77,7 +77,7 @@ parameters['batch_size'] = 32
 parameters['replay_buffer'] = 28000
 
 # number of games to play
-parameters['n_games'] = 250
+parameters['n_games'] = 100
 
 # how many frames between updating target network
 parameters['update_target'] = 250
@@ -88,3 +88,13 @@ parameters['term_on_collision'] = False
 # should be able to get good results after ~ 1000 games with default params and reasonable after a couple hundred
 parameters = Functions.train(parameters)
 
+while True:
+    parameters = Functions.play(parameters)
+
+    parameters['images_dir'] = 'images/'
+    GameEnv.output_sequence_RGB(parameters['played_frames'], parameters['images_dir'], n_players = parameters['n_players'])
+
+    a = raw_input()
+
+    if a == 'sair':
+        exit(0)

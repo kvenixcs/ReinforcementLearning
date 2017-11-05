@@ -7,6 +7,8 @@ http://outlace.com/Reinforcement-Learning-Part-3/
 
 @author: jesseclark
 """
+from __future__ import print_function
+
 from keras.models import Sequential
 from keras.optimizers import RMSprop,SGD,adam
 from keras.layers.core import Dense, Dropout, Activation, Flatten
@@ -29,9 +31,12 @@ def create_pg_model(img_channels, img_rows, img_cols,n_actions=4):
     """ 
         Make a keras CNN model for policy gradient.  
     """
-    
+    print("img_channels: " + str(img_channels))
+    print("img_rows: " + str(img_rows))
+    print("img_cols: " + str(img_cols))
+
     model = Sequential()
-    model.add(Convolution2D(2, 3, 5, input_shape=(img_channel,img_rows,img_cols),border_mode='valid'))
+    model.add(Convolution2D(32, 3, 3, input_shape=(img_channels,img_rows,img_cols),border_mode='valid'))
     model.add(Flatten()) 
     model.add(Dropout(0.1))
     model.add(Dense(n_actions,activation='softmax'))
@@ -350,7 +355,7 @@ def train(parameters):
                                                                    dbldqn=parameters['dqn'])
 
                 model_temp = parameters['model'].fit(X_train, y_train, 
-                                batch_size=parameters['batch_size'], nb_epoch=1, verbose=0)
+                                batch_size=parameters['batch_size'], epochs=1, verbose=0)
                 parameters['loss'].append(model_temp.history['loss'][0])
 
 
@@ -418,7 +423,7 @@ def process_minibatch(model, minibatch, model_target=[], gamma=0.9,
         y = np.zeros((1,n_actions))
         
         # Get stored values.
-        old_state_m, action_m, reward_m, new_state_m, terminal_m = memory
+        old_state_m, action_m, reward_m, new_state_m, terminal_m,_ = memory
         # Get prediction on old state s with new params w.
         Q_s_w = model.predict(old_state_m, batch_size=1)
         
