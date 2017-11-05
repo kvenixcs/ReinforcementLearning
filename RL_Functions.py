@@ -25,6 +25,22 @@ import time
 import GameEnv
 
 
+def create_pg_model(img_channels, img_rows, img_cols,n_actions=4):
+    """ 
+        Make a keras CNN model for policy gradient.  
+    """
+    
+    model = Sequential()
+    model.add(Convolution2D(2, 3, 5, input_shape=(img_channel,img_rows,img_cols),border_mode='valid'))
+    model.add(Flatten()) 
+    model.add(Dropout(0.1))
+    model.add(Dense(n_actions,activation='softmax'))
+    # try clipping or huber loss
+    model.compile(loss='categorical_crossentropy', optimizer='rmsprop')
+
+    return model
+
+
 def create_model(img_channels, img_rows, img_cols, n_conv1=32, n_conv2=64,
                       n_conv3=64, n_out1=512, n_out2=-1, lr=.001, 
                       n_actions=4, loss='mse'):
